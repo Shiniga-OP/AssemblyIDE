@@ -63,11 +63,12 @@ public class MainActivity extends Activity {
                 @Override
                 public void onClick(View v) {
                     try {
-                        escreverArq(dirTrabalho.getAbsolutePath()+nomeArquivo.getText().toString(), editor.getText().toString());
+                        if(nomeArquivo.getText().toString().startsWith("/")) escreverArq(nomeArquivo.getText().toString(), editor.getText().toString());
+                        else escreverArq(dirTrabalho.getAbsolutePath()+"/"+nomeArquivo.getText().toString(), editor.getText().toString());
                         Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
                         _capturar_pasta();
                     } catch(Exception e) {
-                       System.out.println("erro: "+e+"\n"+dirTrabalho.getAbsolutePath()+nomeArquivo.getText().toString());
+                        Toast.makeText(getApplicationContext(), "erro: "+e, Toast.LENGTH_SHORT).show();
                     }
                 }
 			});
@@ -198,8 +199,8 @@ public class MainActivity extends Activity {
             final TextView texArq = view.findViewById(R.id.texArq);
 
             texArq.setText(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
-            if(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".fp")) {
-                iconeArq.setImageResource(R.drawable.imagem);
+            if(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString().endsWith(".asm")) {
+                iconeArq.setImageResource(R.drawable.asm);
             }
             else {
                 if(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".imagem")) {

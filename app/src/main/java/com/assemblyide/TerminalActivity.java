@@ -59,6 +59,10 @@ public class TerminalActivity extends Activity {
         entrada = findViewById(R.id.entrada);
         saida = findViewById(R.id.saida);
         logs = new Logs(saida);
+        if(!(new File(dirPs.getAbsolutePath()+"/bin").isDirectory())) {
+            executar("instalar asm");
+            System.out.println("instalando pacote asm...");
+        }
         if(comandoPadrao != null && !comandoPadrao.equals("")) executar(comandoPadrao);
         entrada.addTextChangedListener(new TextWatcher() {
                 public void beforeTextChanged(CharSequence s, int i, int c, int d) {}

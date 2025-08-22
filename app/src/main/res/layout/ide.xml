@@ -20,6 +20,16 @@
 			android:padding="8dp"
 			android:orientation="horizontal">
 
+			<Button
+				android:id="@+id/executar"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:padding="8dp"
+				android:text="executar"
+				android:textSize="13sp"
+				android:onClick="praTerminal"
+				android:textColor="#000000"/>
+
 			<EditText
 				android:id="@+id/nomeArquivo"
 				android:layout_width="150dp"
@@ -28,23 +38,16 @@
 				android:textSize="15sp"
 				android:textColor="#FCFCFC"
 				android:hint="nome do arquivo"
-				android:textColorHint="#607D8B"/>
+				android:textColorHint="#607D8B"
+				android:background="#FF000000"/>
 
 			<ImageView
+				android:layout_width="48dp"
+				android:layout_height="48dp"
+				android:scaleType="fitCenter"
+				android:adjustViewBounds="true"
 				android:id="@+id/salvar"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:background="@drawable/salvar"
-				android:src="@drawable/salvar"
-				android:scaleType="center"/>
-
-			<ListView
-				android:id="@+id/pastas"
-				android:layout_width="wrap_content"
-				android:layout_height="50dp"
-				android:padding="8dp"
-				android:background="#212121"
-				android:choiceMode="none"/>
+				android:src="@drawable/salvar"/>
 
 		</LinearLayout>
 
@@ -64,19 +67,18 @@
 				android:textColor="#FFFFFF"
 				android:hint="comando"
 				android:textColorHint="#ECEFF1"
-				android:gravity="top"/>
+				android:gravity="top"
+				android:background="#FF000000"/>
 
 		</LinearLayout>
 
-		<Button
-			android:id="@+id/executar"
+		<ListView
+			android:id="@+id/pastas"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="match_parent"
 			android:padding="8dp"
-			android:text="executar"
-			android:textSize="15sp"
-			android:onClick="praTerminal"
-			android:textColor="#000000"/>
+			android:background="#212121"
+			android:choiceMode="none"/>
 
 	</LinearLayout>
 

@@ -3,14 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.assemblyide">
 
-    <!-- ter acesso total à rede -->
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/assemblyide"
         android:label="@string/app_nome"
-        android:theme="@style/AppTheme"
+        android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:largeHeap="true"
         android:resizeableActivity="true">
 
