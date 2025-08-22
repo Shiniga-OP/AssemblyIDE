@@ -12,5 +12,5 @@ especificamente para arquitetura ARM64 Linux (Android), AssemblyIDE contém
 ## propósito:
 na verdade eu só fiz isso porque queria fazer mais coisa com Assembly, e programar no Termux é intankavel.
 
-## aviso:
-para que a IDE compile, linke, e execute, é necessário digitar o comando de instalação do assembly no terminal por enquanto, isso poderá ser aprimorado nas próximas atualizações para ser automático.
+## extra:
+a IDE agora instala o pacote asm diretamente sem necessidade de comando manual.
