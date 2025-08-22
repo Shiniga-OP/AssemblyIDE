@@ -22,22 +22,13 @@
 
 			<EditText
 				android:id="@+id/nomeArquivo"
-				android:layout_width="200dp"
+				android:layout_width="150dp"
 				android:layout_height="wrap_content"
 				android:padding="8dp"
 				android:textSize="15sp"
 				android:textColor="#FCFCFC"
 				android:hint="nome do arquivo"
 				android:textColorHint="#607D8B"/>
-
-			<Button
-				android:id="@+id/criarArquivo"
-				android:layout_width="50dp"
-				android:layout_height="35dp"
-				android:padding="8dp"
-				android:text="criar"
-				android:textSize="15sp"
-				android:textColor="#000000"/>
 
 			<ImageView
 				android:id="@+id/salvar"
@@ -49,25 +40,33 @@
 
 			<ListView
 				android:id="@+id/pastas"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
+				android:layout_width="wrap_content"
+				android:layout_height="50dp"
 				android:padding="8dp"
 				android:background="#212121"
 				android:choiceMode="none"/>
 
 		</LinearLayout>
 
-		<EditText
-			android:id="@+id/editor"
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="300dp"
+			android:layout_height="350dp"
 			android:padding="8dp"
-			android:text="// escreva seu codigo aqui:"
-			android:textSize="14sp"
-			android:textColor="#FFFFFF"
-			android:hint="comando"
-			android:textColorHint="#ECEFF1"
-			android:gravity="top"/>
+			android:orientation="horizontal">
+
+			<EditText
+				android:id="@+id/editor"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:padding="8dp"
+				android:text="// escreva seu codigo aqui:"
+				android:textSize="14sp"
+				android:textColor="#FFFFFF"
+				android:hint="comando"
+				android:textColorHint="#ECEFF1"
+				android:gravity="top"/>
+
+		</LinearLayout>
 
 		<Button
 			android:id="@+id/executar"
@@ -79,17 +78,7 @@
 			android:onClick="praTerminal"
 			android:textColor="#000000"/>
 
-		<EditText
-			android:id="@+id/console"
-			android:layout_width="match_parent"
-			android:layout_height="200dp"
-			android:padding="8dp"
-			android:textSize="10sp"
-			android:textColor="#FFFFFF"
-			android:hint="console"
-			android:textColorHint="#FFFFFF"
-			android:gravity="top"/>
-
 	</LinearLayout>
+
 </LinearLayout>
 

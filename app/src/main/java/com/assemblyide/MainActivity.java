@@ -31,7 +31,6 @@ public class MainActivity extends Activity {
      public ListView pastas;
      public String arquivoAtual;
      public ImageView salvar;
-     public Button criarArquivo;
      public File dirTrabalho;
      public List<String> projetos = new ArrayList<>();
     public List<Map<String, Object>> projetosLista = new ArrayList<>();
@@ -44,7 +43,6 @@ public class MainActivity extends Activity {
         editor = findViewById(R.id.editor);
         nomeArquivo = findViewById(R.id.nomeArquivo);
         salvar = findViewById(R.id.salvar);
-        criarArquivo = findViewById(R.id.criarArquivo);
         
         dirTrabalho = new File(getFilesDir()+"/CASA");
         if(!dirTrabalho.exists()) dirTrabalho.mkdir();
@@ -61,29 +59,13 @@ public class MainActivity extends Activity {
                     nomeArquivo.setText(as[as.length-1]);
                 }
             });
-
-        criarArquivo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    escreverArq(dirTrabalho.getAbsolutePath()+"/"+nomeArquivo.getText().toString(), editor.getText().toString());
-                    Toast.makeText(getApplicationContext(), "arquivo criado", Toast.LENGTH_SHORT).show();
-                    _capturar_pasta();
-                }
-            });
-
         salvar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if(!arqExiste(dirTrabalho.getAbsolutePath()+"/"+nomeArquivo.getText().toString())) {
-                            escreverArq(dirTrabalho.getAbsolutePath()+nomeArquivo.getText().toString(), editor.getText().toString());
-                            Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
-                            _capturar_pasta();
-                        } else {
-                            escreverArq(dirTrabalho.getAbsolutePath()+nomeArquivo.getText().toString(), editor.getText().toString());
-                            Toast.makeText(getApplicationContext(), "arquivo criado", Toast.LENGTH_SHORT).show();
-                            _capturar_pasta();
-                        }
+                        escreverArq(dirTrabalho.getAbsolutePath()+nomeArquivo.getText().toString(), editor.getText().toString());
+                        Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
+                        _capturar_pasta();
                     } catch(Exception e) {
                        System.out.println("erro: "+e+"\n"+dirTrabalho.getAbsolutePath()+nomeArquivo.getText().toString());
                     }
@@ -134,14 +116,11 @@ public class MainActivity extends Activity {
 
     public static String lerArq(String caminho) {
         criarArq(caminho);
-
         StringBuilder sb = new StringBuilder();
         try {
             BufferedReader br = new BufferedReader(new FileReader(caminho));
             String linha;
-            while((linha = br.readLine()) != null) {
-                sb.append(linha).append("\n");
-            }
+            while((linha = br.readLine()) != null) sb.append(linha).append("\n");
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -186,51 +165,51 @@ public class MainActivity extends Activity {
 
     public class PastasAdapter extends BaseAdapter {
 
-        List<Map<String, Object>> _data;
+        public List<Map<String, Object>> dados;
 
-        public PastasAdapter(List<Map<String, Object>> _arr) {
-            _data = _arr;
+        public PastasAdapter(List<Map<String, Object>> arr) {
+            dados = arr;
         }
 
         @Override
         public int getCount() {
-            return _data.size();
+            return dados.size();
         }
 
         @Override
-        public Map<String, Object> getItem(int _index) {
-            return _data.get(_index);
+        public Map<String, Object> getItem(int i) {
+            return dados.get(i);
         }
 
         @Override
-        public long getItemId(int _index) {
-            return _index;
+        public long getItemId(int i) {
+            return i;
         }
 
         @Override
-        public View getView(final int _position, View _v, ViewGroup _container) {
-            LayoutInflater _inflater = getLayoutInflater();
-            View _view = _v;
-            if(_view == null) {
-                _view = _inflater.inflate(R.layout.diretorios, null);
+        public View getView(final int posicao, View v, ViewGroup div) {
+            LayoutInflater inflator = getLayoutInflater();
+            View view = v;
+            if(view == null) {
+                view = inflator.inflate(R.layout.diretorios, null);
             }
 
-            final ImageView imageview1 = _view.findViewById(R.id.iconeArq);
-            final TextView textview1 = _view.findViewById(R.id.texArq);
+            final ImageView iconeArq = view.findViewById(R.id.iconeArq);
+            final TextView texArq = view.findViewById(R.id.texArq);
 
-            textview1.setText(Uri.parse(_data.get(_position).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
-            if(Uri.parse(_data.get(_position).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".fp")) {
-                imageview1.setImageResource(R.drawable.imagem);
+            texArq.setText(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
+            if(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".fp")) {
+                iconeArq.setImageResource(R.drawable.imagem);
             }
             else {
-                if(Uri.parse(_data.get(_position).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".imagem")) {
-                    imageview1.setImageResource(R.drawable.imagem);
+                if(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".imagem")) {
+                    iconeArq.setImageResource(R.drawable.imagem);
                 }
                 else {
-                    imageview1.setImageResource(R.drawable.pasta);
+                    iconeArq.setImageResource(R.drawable.pasta);
                 }
             }
-            return _view;
+            return view;
         }
 	}
     
