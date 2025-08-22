@@ -57,21 +57,27 @@ public class MainActivity extends Activity {
                     arquivoAtual = projetos.get(_param3);
                     String[] as = arquivoAtual.split("/");
                     nomeArquivo.setText(as[as.length-1]);
+                    _capturar_pasta();
                 }
             });
         salvar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
-                        if(nomeArquivo.getText().toString().startsWith("/")) escreverArq(nomeArquivo.getText().toString(), editor.getText().toString());
-                        else escreverArq(dirTrabalho.getAbsolutePath()+"/"+nomeArquivo.getText().toString(), editor.getText().toString());
+                        String caminho;
+                        if(nomeArquivo.getText().toString().startsWith("/"))  caminho = nomeArquivo.getText().toString();
+                        else caminho = dirTrabalho.getAbsolutePath() + "/" + nomeArquivo.getText().toString();
+
+                        escreverArq(caminho, editor.getText().toString());
+                        arquivoAtual = caminho;
+
                         Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
                         _capturar_pasta();
                     } catch(Exception e) {
                         Toast.makeText(getApplicationContext(), "erro: "+e, Toast.LENGTH_SHORT).show();
                     }
                 }
-			});
+            });;
             _capturar_pasta();
     }
     
@@ -165,7 +171,6 @@ public class MainActivity extends Activity {
     }
 
     public class PastasAdapter extends BaseAdapter {
-
         public List<Map<String, Object>> dados;
 
         public PastasAdapter(List<Map<String, Object>> arr) {
@@ -201,15 +206,11 @@ public class MainActivity extends Activity {
             texArq.setText(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
             if(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString().endsWith(".asm")) {
                 iconeArq.setImageResource(R.drawable.asm);
-            }
-            else {
-                if(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment().endsWith(".imagem")) {
+            } else if(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString().endsWith(".imagem")) {
                     iconeArq.setImageResource(R.drawable.imagem);
-                }
-                else {
+            } else {
                     iconeArq.setImageResource(R.drawable.pasta);
                 }
-            }
             return view;
         }
 	}
@@ -218,9 +219,9 @@ public class MainActivity extends Activity {
         if(arquivoAtual != null && !arquivoAtual.equals("")) {
             String nomeArquivo = new File(arquivoAtual).getName();
             TerminalActivity.comandoPadrao = 
-                "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm",".o") + "\n" +
-                "ld " + nomeArquivo.replace(".asm",".o") + " -o " + nomeArquivo.replace(".asm","") + "\n" +
-                "./" + nomeArquivo.replace(".asm","");
+                "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm", ".o") + "\n" +
+                "ld " + nomeArquivo.replace(".asm", ".o") + " -o " + nomeArquivo.replace(".asm", "") + "\n" +
+                "./" + nomeArquivo.replace(".asm", "");
         } else TerminalActivity.comandoPadrao = null;
         Intent t = new Intent(this, TerminalActivity.class);
         startActivity(t);
