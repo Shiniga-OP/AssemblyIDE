@@ -114,7 +114,7 @@ public class TerminalActivity extends Activity {
             });
         File tmp = new File(getFilesDir().getAbsolutePath()+"/tmp");
         if(!tmp.exists()) tmp.mkdirs();
-        final File zip = new File(tmp, "node.zip");
+        final File zip = new File(tmp, "pacote.zip");
         try {
             URL u = new URL(url);
             InputStream en = u.openStream();
@@ -153,7 +153,7 @@ public class TerminalActivity extends Activity {
 				}
 		});
     }
-
+    
     public void executarProcesso(String comando) {
         try {
             ProcessBuilder pb = new ProcessBuilder();

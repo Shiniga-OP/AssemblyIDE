@@ -217,9 +217,10 @@ public class MainActivity extends Activity {
 	}
     
     public void praTerminal(View v) {
+        TerminalActivity.comandoPadrao = "";
         if(arquivoAtual != null && !arquivoAtual.equals("")) {
             String nomeArquivo = new File(arquivoAtual).getName();
-            if(!(new File(getFilesDir().getAbsolutePath()+"/bin").isDirectory())) {
+            if(!(new File(getFilesDir().getAbsolutePath()+"/pacotes/bin").isDirectory())) {
                 TerminalActivity.comandoPadrao = "instalar asm\n";
                 System.out.println("instalando pacote asm...");
             }
