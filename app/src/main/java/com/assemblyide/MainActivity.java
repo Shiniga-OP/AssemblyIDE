@@ -25,6 +25,7 @@ import android.view.LayoutInflater;
 import android.widget.TextView;
 import android.net.Uri;
 import java.util.HashMap;
+import com.terminal.TerminalActivity;
 
 public class MainActivity extends Activity {
      public EditText editor, nomeArquivo;
@@ -218,7 +219,11 @@ public class MainActivity extends Activity {
     public void praTerminal(View v) {
         if(arquivoAtual != null && !arquivoAtual.equals("")) {
             String nomeArquivo = new File(arquivoAtual).getName();
-            TerminalActivity.comandoPadrao = 
+            if(!(new File(getFilesDir().getAbsolutePath()+"/bin").isDirectory())) {
+                TerminalActivity.comandoPadrao = "instalar asm\n";
+                System.out.println("instalando pacote asm...");
+            }
+            TerminalActivity.comandoPadrao += 
                 "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm", ".o") + "\n" +
                 "ld " + nomeArquivo.replace(".asm", ".o") + " -o " + nomeArquivo.replace(".asm", "") + "\n" +
                 "./" + nomeArquivo.replace(".asm", "");

@@ -22,7 +22,7 @@
             android:cursorVisible="false"
             android:longClickable="true"
             android:singleLine="false"
-            android:gravity="top|start"
+            android:gravity="top"
             android:padding="8dp"
             android:background="#000000"
             android:textColor="#00FF00"

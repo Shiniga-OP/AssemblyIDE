@@ -1,4 +1,4 @@
-package com.assemblyide;
+package com.terminal;
 
 import java.io.PrintStream;
 import java.io.FileOutputStream;

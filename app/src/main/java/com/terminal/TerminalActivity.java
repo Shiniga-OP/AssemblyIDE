@@ -1,4 +1,4 @@
-package com.assemblyide;
+package com.terminal;
 
 import android.Manifest;
 import android.app.Activity;
@@ -24,13 +24,14 @@ import java.util.zip.ZipEntry;
 import java.util.ArrayList;
 import java.net.URL;
 import java.io.InputStream;
+import com.assemblyide.R;
 
 public class TerminalActivity extends Activity { 
     public EditText entrada;
     public TextView saida;
     public File dirTrabalho;
     public File dirPs;
-    public List<String> bins;
+	public List<String> bins;
     public Logs logs;
     public static String comandoPadrao;
 
@@ -38,7 +39,7 @@ public class TerminalActivity extends Activity {
     protected void onCreate(Bundle s) {
         super.onCreate(s);
         setContentView(R.layout.terminal);
-
+        
         bins = new ArrayList<>();
         dirPs = new File(getFilesDir().getAbsolutePath()+"/pacotes");
         if(!dirPs.isDirectory()) dirPs.mkdirs();
@@ -47,7 +48,12 @@ public class TerminalActivity extends Activity {
         bins.add(dirPs.getAbsolutePath()+"/libs");
         dirTrabalho = new File(getFilesDir().getAbsolutePath()+"/CASA");
         if(!dirTrabalho.isDirectory()) dirTrabalho.mkdirs();
-
+        
+        entrada = findViewById(R.id.entrada);
+        saida = findViewById(R.id.saida);
+        
+        logs = new Logs(saida);
+        
         System.out.println("> comandos:");
         System.out.println("> instalar <pacote/caminho>");
         System.out.println("> limp");
@@ -55,44 +61,34 @@ public class TerminalActivity extends Activity {
         System.out.println("> pacotes disponiveis");
         System.out.println("> node");
         System.out.println("> asm");
-
-        entrada = findViewById(R.id.entrada);
-        saida = findViewById(R.id.saida);
-        logs = new Logs(saida);
-        if(!(new File(dirPs.getAbsolutePath()+"/bin").isDirectory())) {
-            executar("instalar asm");
-            System.out.println("instalando pacote asm...");
-        }
+        
         if(comandoPadrao != null && !comandoPadrao.equals("")) executar(comandoPadrao);
         entrada.addTextChangedListener(new TextWatcher() {
-                public void beforeTextChanged(CharSequence s, int i, int c, int d) {}
-                public void onTextChanged(CharSequence s, int i, int a, int c) {}
-                public void afterTextChanged(Editable s) {
-                    if(s.toString().contains("\n")) {
-                        String[] comandos = entrada.getText().toString().trim().split("\n");
-                        s.clear();
-                        for(int i = comandos.length-1; i >= 0; i--) {
-                            if(comandos[i].length() == 0) return;
-                            System.out.println("> " + comandos[i]);
-                            executar(comandos[i]);
-                        }
-                    }
-                }
-            });
+				public void beforeTextChanged(CharSequence s, int i, int c, int d) {}
+				public void onTextChanged(CharSequence s, int i, int a, int c) {}
+				public void afterTextChanged(Editable s) {
+                    String c = s.toString();
+					if(c.endsWith("\n")) {
+						System.out.println("> " + c);
+                        executar(c);
+						s.clear();
+					}
+				}
+		});
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if(checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
         }
     }
-
+    
     public void executar(final String comandoStr) {
         new Thread(new Runnable() {
-                public void run() {
-                    if(comandoStr.startsWith("cd ")) {
-                        executarCd(comandoStr.substring(3).trim());
-                        return;
-                    } else if(comandoStr.startsWith("limp")) {
+				public void run() {
+					if(comandoStr.startsWith("cd ")) {
+						executarCd(comandoStr.substring(3).trim());
+						return;
+					} else if(comandoStr.startsWith("limp")) {
                         saida.setText("");
                         return;
                     } else if(comandoStr.startsWith("instalar node")) {  
@@ -105,15 +101,20 @@ public class TerminalActivity extends Activity {
                         instalarPacote(comandoStr.substring(9).trim());
                         return;
                     }
-                    executarProcesso(comandoStr);
-                }
-            }).start();
+					executarProcesso(comandoStr);
+				}
+		}).start();
     }
-
+    
     public void instalarWeb(final String url) {
+        runOnUiThread(new Runnable() {
+                public void run() {
+                    System.out.println("baixando pacote...");
+                }
+            });
         File tmp = new File(getFilesDir().getAbsolutePath()+"/tmp");
         if(!tmp.exists()) tmp.mkdirs();
-        final File zip = new File(tmp, "pacote.zip");
+        final File zip = new File(tmp, "node.zip");
         try {
             URL u = new URL(url);
             InputStream en = u.openStream();
@@ -147,10 +148,10 @@ public class TerminalActivity extends Activity {
         }
         dirTrabalho = novo;
         runOnUiThread(new Runnable() {
-                public void run() {
-                    System.out.println("Diretório atual: " + dirTrabalho.getAbsolutePath() + "\n");
-                }
-            });
+				public void run() {
+					System.out.println("Diretório atual: " + dirTrabalho.getAbsolutePath() + "\n");
+				}
+		});
     }
 
     public void executarProcesso(String comando) {
@@ -203,13 +204,18 @@ public class TerminalActivity extends Activity {
 
     public void erro(final String msg) {
         runOnUiThread(new Runnable() {
+				public void run() {
+					System.out.println("erro: " + (msg != null ? msg : "Erro desconhecido") + "\n");
+				}
+		});
+    }
+    
+    public void instalarPacote(String cam) {
+        runOnUiThread(new Runnable() {
                 public void run() {
-                    System.out.println("erro: " + (msg != null ? msg : "Erro desconhecido") + "\n");
+                    System.out.println("instalando pacote...");
                 }
             });
-    }
-
-    public void instalarPacote(String cam) {
         final File zipArq = new File(cam);
         if(!zipArq.exists()) return;
         try {
