@@ -3,7 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.assemblyide">
 
+    <!-- ter acesso total à rede -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- alterar ou excluir conteúdo do armaz. compartilhado -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!-- ler conteúdo do armaz. comp. -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <!-- MANAGE_EXTERNAL_STORAGE -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"

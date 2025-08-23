@@ -26,6 +26,8 @@ import android.widget.TextView;
 import android.net.Uri;
 import java.util.HashMap;
 import com.terminal.TerminalActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 public class MainActivity extends Activity {
      public EditText editor, nomeArquivo;
@@ -205,13 +207,17 @@ public class MainActivity extends Activity {
             final TextView texArq = view.findViewById(R.id.texArq);
 
             texArq.setText(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
-            if(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString().endsWith(".asm")) {
+            String cam = dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString();
+            if(cam.endsWith(".asm") || cam.endsWith(".s")) {
                 iconeArq.setImageResource(R.drawable.asm);
-            } else if(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString().endsWith(".imagem")) {
-                    iconeArq.setImageResource(R.drawable.imagem);
+            } else if(cam.endsWith(".png") || cam.endsWith(".jpg")) {
+                Bitmap imagem = BitmapFactory.decodeFile(cam);
+                iconeArq.setImageBitmap(imagem);
+            } else if(cam.endsWith(".txt")) {
+                iconeArq.setImageResource(R.drawable.txt);
             } else {
-                    iconeArq.setImageResource(R.drawable.pasta);
-                }
+                iconeArq.setImageResource(R.drawable.pasta);
+            }
             return view;
         }
 	}

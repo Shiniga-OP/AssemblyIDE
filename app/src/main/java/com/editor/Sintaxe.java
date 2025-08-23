@@ -148,64 +148,35 @@ public class Sintaxe {
     }
 
     public class olhadorSintaxe implements TextWatcher {
-		private final EditText editor;
-		private final Runnable tarefaDestaque = new Runnable() {
+		public final EditText editor;
+		public final Runnable tarefaDestaque = new Runnable() {
 			@Override public void run() {
 				if(editor.getWindowToken() != null) {
 					destacarSintaxe(editor);
 				}
 			}
 		};
-		private boolean processando = false;
-		private int ultimoInicio, ultimoAntes, ultimaQuantidade;
+		public boolean processando = false;
+		public int ultimoInicio, ultimoAntes, ultimaQuantidade;
 
 		public olhadorSintaxe(EditText editor) {
 			this.editor = editor;
 		}
 
 		@Override
-		public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+		public void beforeTextChanged(CharSequence s, int i, int c, int a) { }
 
 		@Override
-		public void onTextChanged(CharSequence s, int start, int before, int count) {
-			ultimoInicio = start;
-			ultimoAntes = before;
-			ultimaQuantidade = count;
+		public void onTextChanged(CharSequence s, int i, int a, int c) {
+			ultimoInicio = i;
+			ultimoAntes = a;
+			ultimaQuantidade = c;
 		}
 
 		@Override
 		public void afterTextChanged(Editable s) {
 			if(processando) return;
 			processando = true;
-
-			if(ultimoAntes == 0 && ultimaQuantidade == 1) {
-				char c = s.charAt(ultimoInicio);
-				if(c == '{') {
-					if(ultimoInicio + 1 >= s.length() || s.charAt(ultimoInicio + 1) != '}') {
-						s.insert(ultimoInicio + 1, "}");
-					}
-					editor.setSelection(ultimoInicio);
-				} else if(c == '\n') {
-					int pos = ultimoInicio;
-					int lin = pos - 1;
-					while(lin >= 0 && s.charAt(lin) != '\n') lin--;
-					int inicioLinha = lin + 1;
-					int contadorTabs = 0;
-					while(inicioLinha + contadorTabs < s.length()
-						   && s.charAt(inicioLinha + contadorTabs) == '\t') {
-						contadorTabs++;
-					}
-					StringBuilder sb = new StringBuilder();
-					for(int i = 0; i < contadorTabs; i++) sb.append('\t');
-					int fim = pos - 1;
-					while(fim >= 0 && (s.charAt(fim) == '\t' || s.charAt(fim) == ' ')) fim--;
-					boolean abre = fim >= 0 && (s.charAt(fim) == '{' || s.charAt(fim) == ':');
-					if(abre) sb.append('\t');
-					String indent = sb.toString();
-					s.insert(pos + 1, indent);
-					editor.setSelection(pos + 1 + indent.length());
-				}
-			}
 			editor.removeCallbacks(tarefaDestaque);
 			editor.postDelayed(tarefaDestaque, Sintaxe.DELAY_MILLIS);
 			processando = false;
@@ -421,6 +392,7 @@ public class Sintaxe {
             destacarPalavra(e, texto, "byte", "#3F51B5");
             destacarPalavra(e, texto, "bss", "#3F51B5");
             destacarPalavra(e, texto, "word", "#3F51B5");
+            destacarPalavra(e, texto, "space", "#3F51B5");
             destacarPalavra(e, texto, "align", "#3F51B5");
             destacarPalavra(e, texto, "include", "#3F51B5");
             // verde claro
@@ -445,6 +417,16 @@ public class Sintaxe {
             destacarPalavra(e, texto, "x10", "#FF1493");
             destacarPalavra(e, texto, "x11", "#FF1493");
             destacarPalavra(e, texto, "x12", "#FF1493");
+            destacarPalavra(e, texto, "x13", "#FF1493");
+            destacarPalavra(e, texto, "x14", "#FF1493");
+            destacarPalavra(e, texto, "x15", "#FF1493");
+            destacarPalavra(e, texto, "x16", "#FF1493");
+            destacarPalavra(e, texto, "x17", "#FF1493");
+            destacarPalavra(e, texto, "x18", "#FF1493");
+            destacarPalavra(e, texto, "x19", "#FF1493");
+            destacarPalavra(e, texto, "x20", "#FF1493");
+            destacarPalavra(e, texto, "x21", "#FF1493");
+            destacarPalavra(e, texto, "x22", "#FF1493");
             // azul claro
             destacarPalavra(e, texto, "mov", "#64B5F6");
             destacarPalavra(e, texto, "ldr", "#64B5F6");
