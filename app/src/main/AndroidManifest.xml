@@ -31,7 +31,7 @@
             android:name="android.max_aspect"
             android:value="4.0"/>
 
-        <activity android:name=".TerminalActivity"/>
+        <activity android:name="com.terminal.TerminalActivity"/>
 
     </application>
 
