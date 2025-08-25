@@ -178,7 +178,7 @@ public class AutoCompletar {
             };    
         } else if(linguagem.equals("asm-arm64")) {    
             return new String[]{    
-                "mov", "ldr", "str", "add", "sub", "mul", "udiv", "sdiv",    
+                "mov", "ldr", "str", "add", "sub", "mul", "udiv", "sdiv", "strb",
                 "and", "orr", "eor", "lsl", "lsr", "asr", "cmp", "cmn",    
                 "b", "bl", "ret", "cbz", "cbnz", "b.eq", "b.ne", "b.lt", "b.gt",    
 

@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
                         Toast.makeText(getApplicationContext(), "erro: "+e, Toast.LENGTH_SHORT).show();
                     }
                 }
-            });;
+            });
             _capturar_pasta();
     }
     
@@ -223,16 +223,30 @@ public class MainActivity extends Activity {
 	}
     
     public void praTerminal(View v) {
+        try {
+            String caminho;
+            if(nomeArquivo.getText().toString().startsWith("/"))  caminho = nomeArquivo.getText().toString();
+            else caminho = dirTrabalho.getAbsolutePath() + "/" + nomeArquivo.getText().toString();
+
+            escreverArq(caminho, editor.getText().toString());
+            arquivoAtual = caminho;
+
+            Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
+            _capturar_pasta();
+        } catch(Exception e) {
+            Toast.makeText(getApplicationContext(), "erro: "+e, Toast.LENGTH_SHORT).show();
+        }
         TerminalActivity.comandoPadrao = "";
         if(arquivoAtual != null && !arquivoAtual.equals("")) {
             String nomeArquivo = new File(arquivoAtual).getName();
             if(!(new File(getFilesDir().getAbsolutePath()+"/pacotes/bin").isDirectory())) {
                 TerminalActivity.comandoPadrao = "instalar asm\n";
                 System.out.println("instalando pacote asm...");
+                System.out.println("execute asm apos a instalação");
             }
             TerminalActivity.comandoPadrao += 
-                "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm", ".o") + "\n" +
-                "ld " + nomeArquivo.replace(".asm", ".o") + " -o " + nomeArquivo.replace(".asm", "") + "\n" +
+                "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm", ".o") + "&&\n" +
+                "ld " + nomeArquivo.replace(".asm", ".o") + " -o " + nomeArquivo.replace(".asm", "") + "&&\n" +
                 "./" + nomeArquivo.replace(".asm", "");
         } else TerminalActivity.comandoPadrao = null;
         Intent t = new Intent(this, TerminalActivity.class);

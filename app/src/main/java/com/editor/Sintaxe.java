@@ -381,78 +381,52 @@ public class Sintaxe {
             int selecaoFinal = editor.getSelectionEnd();
 
             limparSpans(e);
-
             String texto = e.toString();
-
             // azul escuro
             destacarPalavra(e, texto, "text", "#3F51B5");
             destacarPalavra(e, texto, "data", "#3F51B5");
             destacarPalavra(e, texto, "rodata", "#3F51B5");
+            destacarPalavra(e, texto, "bss", "#3F51B5");
             destacarPalavra(e, texto, "asciz", "#3F51B5");
             destacarPalavra(e, texto, "byte", "#3F51B5");
-            destacarPalavra(e, texto, "bss", "#3F51B5");
             destacarPalavra(e, texto, "word", "#3F51B5");
             destacarPalavra(e, texto, "space", "#3F51B5");
             destacarPalavra(e, texto, "align", "#3F51B5");
             destacarPalavra(e, texto, "include", "#3F51B5");
-            // verde claro
-            destacarPalavra(e, texto, "svc", "#98FB98");
-            // rosa claro
-            destacarPalavra(e, texto, "ret", "#FF69B4");
             // vermelho
             destacarPalavra(e, texto, "global", "#FF0000");
             destacarPalavra(e, texto, "section", "#FF0000");
-            // rosa forte
-            destacarNumeros(e, texto, "#FF1493");
-            destacarPalavra(e, texto, "x0", "#FF1493");
-            destacarPalavra(e, texto, "x1", "#FF1493");
-            destacarPalavra(e, texto, "x2", "#FF1493");
-            destacarPalavra(e, texto, "x3", "#FF1493");
-            destacarPalavra(e, texto, "x4", "#FF1493");
-            destacarPalavra(e, texto, "x5", "#FF1493");
-            destacarPalavra(e, texto, "x6", "#FF1493");
-            destacarPalavra(e, texto, "x7", "#FF1493");
-            destacarPalavra(e, texto, "x8", "#FF1493");
-            destacarPalavra(e, texto, "x9", "#FF1493");
-            destacarPalavra(e, texto, "x10", "#FF1493");
-            destacarPalavra(e, texto, "x11", "#FF1493");
-            destacarPalavra(e, texto, "x12", "#FF1493");
-            destacarPalavra(e, texto, "x13", "#FF1493");
-            destacarPalavra(e, texto, "x14", "#FF1493");
-            destacarPalavra(e, texto, "x15", "#FF1493");
-            destacarPalavra(e, texto, "x16", "#FF1493");
-            destacarPalavra(e, texto, "x17", "#FF1493");
-            destacarPalavra(e, texto, "x18", "#FF1493");
-            destacarPalavra(e, texto, "x19", "#FF1493");
-            destacarPalavra(e, texto, "x20", "#FF1493");
-            destacarPalavra(e, texto, "x21", "#FF1493");
-            destacarPalavra(e, texto, "x22", "#FF1493");
             // azul claro
-            destacarPalavra(e, texto, "mov", "#64B5F6");
-            destacarPalavra(e, texto, "ldr", "#64B5F6");
-            destacarPalavra(e, texto, "cmp", "#64B5F6");
-            destacarPalavra(e, texto, "cmn", "#64B5F6");
-            destacarPalavra(e, texto, "sub", "#64B5F6");
-            destacarPalavra(e, texto, "add", "#64B5F6");
-            destacarPalavra(e, texto, "mul", "#64B5F6");
-            destacarPalavra(e, texto, "udiv", "#64B5F6");
-            destacarPalavra(e, texto, "sdiv", "#64B5F6");
-            destacarPalavra(e, texto, "str", "#64B5F6");
-            destacarPalavra(e, texto, "b", "#64B5F6");
-            destacarPalavra(e, texto, "bl", "#64B5F6");
-            destacarPalavra(e, texto, "str", "#64B5F6");
-            // bege
-            // destacarPalavra(e, texto, "_", "#F4A460");
+            String[] instrucoes = {
+                "mov", "ldr", "str", "strb", "ldrb", 
+                "add", "sub", "mul", "udiv", "sdiv",
+                "cmp", "cmn", "b", "bl", "blt", "bgt", "beq",
+                "bne", "cbz", "cbnz", "and", "orr", "eor", 
+                "lsl", "lsr", "asr", "mvn", "neg"
+            };
+            for(String inst : instrucoes) destacarPalavra(e, texto, inst, "#64B5F6");
+            // rosa forte
+            Pattern registroPattern = Pattern.compile("\\b([wx][0-9]{1,2})\\b");
+            Matcher mReg = registroPattern.matcher(texto);
+            while(mReg.find()) {
+                e.setSpan(
+                    new ForegroundColorSpan(Color.parseColor("#FF1493")),
+                    mReg.start(),
+                    mReg.end(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+            }
+            destacarPalavra(e, texto, "ret", "#FF69B4");
+            // rosa
+            destacarNumeros(e, texto, "#FF1493");
             // cinza
             destacarComentarios(e, texto);
+            // verde claro
+            destacarPalavra(e, texto, "svc", "#98FB98");
             // verde
             destacarAspas(e, texto, "#66BB6A");
             destacarAspasSim(e, texto, "#66BB6A");
-            destacarAspasEs(e, texto, "#66BB6A");
-
-            if(selecaoComeco >= 0 && selecaoFinal >= 0 && selecaoComeco <= e.length() && selecaoFinal <= e.length()) {
-                editor.setSelection(selecaoComeco, selecaoFinal);
-            }
+            if(selecaoComeco >= 0 && selecaoFinal >= 0) editor.setSelection(selecaoComeco, selecaoFinal);
         }
-	}
+    }
 }
