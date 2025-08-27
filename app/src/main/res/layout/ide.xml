@@ -22,38 +22,43 @@
 
 			<Button
 				android:id="@+id/executar"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="80dp"
+				android:layout_height="40dp"
 				android:padding="8dp"
 				android:text="executar"
-				android:textSize="13sp"
+				android:textSize="10sp"
 				android:onClick="praTerminal"
 				android:textColor="#000000"/>
 
 			<EditText
 				android:id="@+id/nomeArquivo"
-				android:layout_width="150dp"
+				android:layout_width="100dp"
 				android:layout_height="wrap_content"
 				android:padding="8dp"
-				android:textSize="15sp"
+				android:textSize="10sp"
 				android:textColor="#FCFCFC"
 				android:hint="nome do arquivo"
 				android:textColorHint="#607D8B"
 				android:background="#FF000000"/>
 
 			<ImageView
-				android:layout_width="48dp"
-				android:layout_height="48dp"
+				android:layout_width="40dp"
+				android:layout_height="40dp"
 				android:scaleType="fitCenter"
 				android:adjustViewBounds="true"
 				android:id="@+id/salvar"
 				android:src="@drawable/salvar"/>
 
+			<CheckBox
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:onClick="autocomplete"/>
+
 		</LinearLayout>
 
 		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="350dp"
+			android:layout_height="400dp"
 			android:padding="8dp"
 			android:orientation="horizontal">
 
@@ -72,13 +77,21 @@
 
 		</LinearLayout>
 
-		<ListView
-			android:id="@+id/pastas"
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
+			android:layout_height="400dp"
 			android:padding="8dp"
-			android:background="#212121"
-			android:choiceMode="none"/>
+			android:orientation="horizontal">
+
+			<ListView
+				android:id="@+id/pastas"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:padding="8dp"
+				android:background="#212121"
+				android:choiceMode="none"/>
+
+		</LinearLayout>
 
 	</LinearLayout>
 

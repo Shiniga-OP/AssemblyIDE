@@ -26,6 +26,7 @@ public class AutoCompletar {
     public final List<String> sugestoes = new ArrayList<>();    
     public final PopupWindow popup;    
     public final LinearLayout layout;    
+    public static boolean autocomplete = false;
 
     public AutoCompletar(Activity act, EditText et, String... lista) {    
         activity = act;    
@@ -222,8 +223,8 @@ public class AutoCompletar {
 
                 if(c == '\n') {
                     int pos = ultimoInicio;
-
-                    if(!sugestoes.isEmpty()) {
+                    
+                    if(!sugestoes.isEmpty() && autocomplete) {
                         int i = pos - 1;
                         while(i >= 0 && Character.isLetterOrDigit(s.charAt(i))) i--;
                         int tokenStart = i + 1;

@@ -28,6 +28,8 @@ import java.util.HashMap;
 import com.terminal.TerminalActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 public class MainActivity extends Activity {
      public EditText editor, nomeArquivo;
@@ -55,12 +57,25 @@ public class MainActivity extends Activity {
         
         pastas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> _param1, View _param2, int _param3, long _param4) {
-                    editor.setText(lerArq(projetos.get(_param3)));
-                    arquivoAtual = projetos.get(_param3);
-                    String[] as = arquivoAtual.split("/");
-                    nomeArquivo.setText(as[as.length-1]);
-                    _capturar_pasta();
+                public void onItemClick(AdapterView<?>  param1, View param2, int param3, long param4) {
+                    File pasta = new File(projetos.get(param3));
+                    if(pasta.isDirectory()) {
+                        dirTrabalho = pasta;
+                        _capturar_pasta();
+                    } else {
+                        editor.setText(lerArq(projetos.get(param3)));
+                        arquivoAtual = projetos.get(param3);
+                        String[] as = arquivoAtual.split("/");
+                        nomeArquivo.setText(as[as.length-1]);
+                        _capturar_pasta();
+                    }
+                }
+            });
+        pastas.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> p, View view, int pos, long id) {
+                    mostrarMenuContexto(projetos.get(pos));
+                    return true;
                 }
             });
         salvar.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +97,67 @@ public class MainActivity extends Activity {
                 }
             });
             _capturar_pasta();
+    }
+    
+    public void mostrarMenuContexto(final String caminho) {
+        final File arquivo = new File(caminho);
+
+        final CharSequence[] opcoes = new CharSequence[]{"Renomear", "Excluir"};
+
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle(arquivo.getName());
+        b.setItems(opcoes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface d, int i) {
+                    switch(i) {
+                        case 0:
+                            renomearArquivo(arquivo);
+                            break;
+                        case 1:
+                            excluirArquivo(arquivo);
+                            break;
+                    }
+                }
+            });
+        b.show();
+    }
+
+    public void renomearArquivo(final File arquivo) {
+        final EditText e = new EditText(this);
+        e.setText(arquivo.getName());
+
+        new AlertDialog.Builder(this)
+            .setTitle("Renomear")
+            .setView(e)
+            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface d, int i) {
+                    String novoNome = e.getText().toString();
+                    File novoArquivo = new File(arquivo.getParent(), novoNome);
+                    if(arquivo.renameTo(novoArquivo)) _capturar_pasta();
+                    else Toast.makeText(MainActivity.this, "Falha ao renomear", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNegativeButton("Cancelar", null)
+            .show();
+    }
+
+    public void excluirArquivo(final File arquivo) {
+        new AlertDialog.Builder(this)
+            .setTitle("Excluir")
+            .setMessage("Tem certeza que deseja excluir " + arquivo.getName() + "?")
+            .setPositiveButton("Sim", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface d, int i) {
+                    if(deletarRecursivo(arquivo)) _capturar_pasta();
+                    else Toast.makeText(MainActivity.this, "Falha ao excluir", Toast.LENGTH_SHORT).show();
+                }
+            })
+            .setNegativeButton("Não", null)
+            .show();
+    }
+
+    private boolean deletarRecursivo(File arquivo) {
+        if(arquivo.isDirectory()) for(File filho : arquivo.listFiles()) deletarRecursivo(filho);
+        return arquivo.delete();
     }
     
     public static void listeDir(String cam, List<String> lista) {
@@ -167,9 +243,7 @@ public class MainActivity extends Activity {
                 _item.put(dirTrabalho.getAbsolutePath(), projetos.get(i));
                 projetosLista.add(_item);
             }
-
             pastas.setAdapter(new PastasAdapter(projetosLista));
-            ((BaseAdapter)pastas.getAdapter()).notifyDataSetChanged();
         }
     }
 
@@ -197,59 +271,60 @@ public class MainActivity extends Activity {
 
         @Override
         public View getView(final int posicao, View v, ViewGroup div) {
-            LayoutInflater inflator = getLayoutInflater();
+            LayoutInflater inflador = getLayoutInflater();
             View view = v;
-            if(view == null) {
-                view = inflator.inflate(R.layout.diretorios, null);
-            }
+            if(view == null) view = inflador.inflate(R.layout.diretorios, null);
 
             final ImageView iconeArq = view.findViewById(R.id.iconeArq);
             final TextView texArq = view.findViewById(R.id.texArq);
 
             texArq.setText(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
             String cam = dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString();
-            if(cam.endsWith(".asm") || cam.endsWith(".s")) {
-                iconeArq.setImageResource(R.drawable.asm);
-            } else if(cam.endsWith(".png") || cam.endsWith(".jpg")) {
-                Bitmap imagem = BitmapFactory.decodeFile(cam);
+            if(cam.endsWith(".asm") || cam.endsWith(".s")) iconeArq.setImageResource(R.drawable.asm);
+            else if(cam.endsWith(".png") || cam.endsWith(".jpg")) {
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inSampleSize = 4; // diminui a resolucao 4 vezes
+                Bitmap imagem = BitmapFactory.decodeFile(cam, opts);
                 iconeArq.setImageBitmap(imagem);
-            } else if(cam.endsWith(".txt")) {
-                iconeArq.setImageResource(R.drawable.txt);
-            } else {
-                iconeArq.setImageResource(R.drawable.pasta);
-            }
+            } else if(cam.endsWith(".txt")) iconeArq.setImageResource(R.drawable.txt);
+            else iconeArq.setImageResource(R.drawable.pasta);
             return view;
         }
 	}
     
     public void praTerminal(View v) {
-        try {
-            String caminho;
-            if(nomeArquivo.getText().toString().startsWith("/"))  caminho = nomeArquivo.getText().toString();
-            else caminho = dirTrabalho.getAbsolutePath() + "/" + nomeArquivo.getText().toString();
-
-            escreverArq(caminho, editor.getText().toString());
-            arquivoAtual = caminho;
-
-            Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
-            _capturar_pasta();
-        } catch(Exception e) {
-            Toast.makeText(getApplicationContext(), "erro: "+e, Toast.LENGTH_SHORT).show();
-        }
         TerminalActivity.comandoPadrao = "";
         if(arquivoAtual != null && !arquivoAtual.equals("")) {
+            try {
+                String caminho;
+                if(nomeArquivo.getText().toString().startsWith("/"))  caminho = nomeArquivo.getText().toString();
+                else caminho = dirTrabalho.getAbsolutePath() + "/" + nomeArquivo.getText().toString();
+
+                escreverArq(caminho, editor.getText().toString());
+                arquivoAtual = caminho;
+
+                Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
+                _capturar_pasta();
+            } catch(Exception e) {
+                Toast.makeText(getApplicationContext(), "erro: "+e, Toast.LENGTH_SHORT).show();
+            }
             String nomeArquivo = new File(arquivoAtual).getName();
             if(!(new File(getFilesDir().getAbsolutePath()+"/pacotes/bin").isDirectory())) {
-                TerminalActivity.comandoPadrao = "instalar asm\n";
                 System.out.println("instalando pacote asm...");
+                TerminalActivity.executarEs("instalar asm", this);
                 System.out.println("execute asm apos a instalação");
             }
             TerminalActivity.comandoPadrao += 
-                "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm", ".o") + "&&\n" +
-                "ld " + nomeArquivo.replace(".asm", ".o") + " -o " + nomeArquivo.replace(".asm", "") + "&&\n" +
+                "as " + nomeArquivo + " -o " + nomeArquivo.replace(".asm", ".o") + "&& " +
+                "ld " + nomeArquivo.replace(".asm", ".o") + " -o " + nomeArquivo.replace(".asm", "") + "&& " +
                 "./" + nomeArquivo.replace(".asm", "");
         } else TerminalActivity.comandoPadrao = null;
         Intent t = new Intent(this, TerminalActivity.class);
         startActivity(t);
+    }
+    
+    public void autocomplete(View v) {
+        if(AutoCompletar.autocomplete) AutoCompletar.autocomplete = false;
+        else AutoCompletar.autocomplete = true;
     }
 }
