@@ -22,7 +22,7 @@
 
 			<Button
 				android:id="@+id/executar"
-				android:layout_width="80dp"
+				android:layout_width="65dp"
 				android:layout_height="40dp"
 				android:padding="8dp"
 				android:text="executar"
@@ -32,7 +32,7 @@
 
 			<EditText
 				android:id="@+id/nomeArquivo"
-				android:layout_width="100dp"
+				android:layout_width="80dp"
 				android:layout_height="wrap_content"
 				android:padding="8dp"
 				android:textSize="10sp"
@@ -53,6 +53,13 @@
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
 				android:onClick="autocomplete"/>
+
+			<Button
+				android:layout_width="40dp"
+				style="?android:attr/buttonStyleSmall"
+				android:layout_height="40dp"
+				android:text="&lt;="
+				android:onClick="voltar"/>
 
 		</LinearLayout>
 

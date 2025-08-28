@@ -86,7 +86,10 @@ public class MainActivity extends Activity {
                         if(nomeArquivo.getText().toString().startsWith("/"))  caminho = nomeArquivo.getText().toString();
                         else caminho = dirTrabalho.getAbsolutePath() + "/" + nomeArquivo.getText().toString();
 
-                        escreverArq(caminho, editor.getText().toString());
+                        if(caminho.endsWith("/")) {
+							File pasta = new File(caminho);
+							if(!pasta.exists()) pasta.mkdirs();
+						} else escreverArq(caminho, editor.getText().toString());
                         arquivoAtual = caminho;
 
                         Toast.makeText(getApplicationContext(), "arquivo salvo", Toast.LENGTH_SHORT).show();
@@ -234,18 +237,17 @@ public class MainActivity extends Activity {
     }
     
     public void _capturar_pasta() {
-        projetosLista.clear();
-        projetos.clear();
-        listeDir(dirTrabalho.getAbsolutePath(), projetos);
+		projetosLista.clear();
+		projetos.clear();
+		listeDir(dirTrabalho.getAbsolutePath(), projetos);
 
-        for(int i = 0; i < projetos.size(); i++) { {
-                Map<String, Object> _item = new HashMap<>();
-                _item.put(dirTrabalho.getAbsolutePath(), projetos.get(i));
-                projetosLista.add(_item);
-            }
-            pastas.setAdapter(new PastasAdapter(projetosLista));
-        }
-    }
+		for(int i = 0; i < projetos.size(); i++) {
+			Map<String, Object> _item = new HashMap<>();
+			_item.put("caminho", projetos.get(i)); // chave fixa
+			projetosLista.add(_item);
+		}
+		pastas.setAdapter(new PastasAdapter(projetosLista)); // fora do loop
+	}
 
     public class PastasAdapter extends BaseAdapter {
         public List<Map<String, Object>> dados;
@@ -278,8 +280,8 @@ public class MainActivity extends Activity {
             final ImageView iconeArq = view.findViewById(R.id.iconeArq);
             final TextView texArq = view.findViewById(R.id.texArq);
 
-            texArq.setText(Uri.parse(dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString()).getLastPathSegment());
-            String cam = dados.get(posicao).get(dirTrabalho.getAbsolutePath()).toString();
+            String cam = dados.get(posicao).get("caminho").toString();
+			texArq.setText(Uri.parse(cam).getLastPathSegment());
             if(cam.endsWith(".asm") || cam.endsWith(".s")) iconeArq.setImageResource(R.drawable.asm);
             else if(cam.endsWith(".png") || cam.endsWith(".jpg")) {
                 BitmapFactory.Options opts = new BitmapFactory.Options();
@@ -327,4 +329,13 @@ public class MainActivity extends Activity {
         if(AutoCompletar.autocomplete) AutoCompletar.autocomplete = false;
         else AutoCompletar.autocomplete = true;
     }
+	
+	public void voltar(View v) {
+		File pai = dirTrabalho.getParentFile();
+		if(pai != null && pai.exists()) {
+			dirTrabalho = pai;
+			_capturar_pasta();
+			Toast.makeText(this, "1 pasta voltada", Toast.LENGTH_SHORT).show();
+		} else Toast.makeText(this, "já está na raiz", Toast.LENGTH_SHORT).show();
+	}
 }
